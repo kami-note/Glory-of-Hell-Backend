@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 
@@ -19,8 +20,17 @@ namespace Black_Magic_Backend
             try
             {
                 JObject json = JObject.Parse(data);
-                string username = json["username"]?.ToString();
-                string password = json["password"]?.ToString();
+                JToken? usernameToken = json["username"];
+                JToken? passwordToken = json["password"];
+
+                if (usernameToken == null || passwordToken == null)
+                {
+                    throw new Exception("Username or password missing from JSON");
+                }
+
+                string username = usernameToken.ToString();
+                string password = passwordToken.ToString();
+
 
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
@@ -56,8 +66,16 @@ namespace Black_Magic_Backend
             try
             {
                 JObject json = JObject.Parse(data);
-                string username = json["username"]?.ToString();
-                string password = json["password"]?.ToString();
+                JToken? usernameToken = json["username"];
+                JToken? passwordToken = json["password"];
+
+                if(usernameToken == null || passwordToken == null)
+                {
+                    throw new Exception("Username or password missing from JSON");
+                }
+
+                string username = usernameToken.ToString();
+                string password = passwordToken.ToString();
 
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
