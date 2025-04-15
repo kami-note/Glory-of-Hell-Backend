@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Black_Magic_Backend.Models {
     public class User {
-        [Key] // Define como chave primária no banco de dados
+        [Key]
         public int Id { get; set; }
 
         [Required]
