@@ -2,16 +2,17 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using BlackMagicBackend.DataTypes;
 
 namespace Black_Magic_Backend
 {
     public class AuthSystem
     {
-        private readonly DatabaseContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public AuthSystem()
         {
-            _dbContext = new DatabaseContext();
+            _dbContext = new ApplicationDbContext();
             _dbContext.Database.EnsureCreated();
         }
 
@@ -30,7 +31,6 @@ namespace Black_Magic_Backend
 
                 string username = usernameToken.ToString();
                 string password = passwordToken.ToString();
-
 
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
@@ -51,7 +51,20 @@ namespace Black_Magic_Backend
                 _dbContext.Users.Add(newUser);
                 _dbContext.SaveChanges();
 
+                var newCharacter = new Models.Character();
+                newCharacter.UserId = newUser.Id;
+                newCharacter.User = newUser;
+                newCharacter.Name = username;
+                newCharacter.Position = new Vector3(0, 0, 0);
+
+                PrettyConsole.LogInfo(JsonConvert.SerializeObject(newCharacter));
+
+                _dbContext.Characters.Add(newCharacter);
+                _dbContext.SaveChanges();
+
                 PrettyConsole.LogInfo($"User {username} registered successfully!");
+                PrettyConsole.LogInfo($"Character {newCharacter.Name} created successfully!");
+
                 return true;
             }
             catch (Exception ex)
@@ -61,6 +74,7 @@ namespace Black_Magic_Backend
             }
         }
 
+
         public bool AuthenticateUser(string data)
         {
             try
@@ -69,7 +83,7 @@ namespace Black_Magic_Backend
                 JToken? usernameToken = json["username"];
                 JToken? passwordToken = json["password"];
 
-                if(usernameToken == null || passwordToken == null)
+                if (usernameToken == null || passwordToken == null)
                 {
                     throw new Exception("Username or password missing from JSON");
                 }
