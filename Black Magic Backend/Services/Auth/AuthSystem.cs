@@ -57,8 +57,6 @@ namespace Black_Magic_Backend
                 newCharacter.Name = username;
                 newCharacter.Position = new Vector3(0, 0, 0);
 
-                PrettyConsole.LogInfo(JsonConvert.SerializeObject(newCharacter));
-
                 _dbContext.Characters.Add(newCharacter);
                 _dbContext.SaveChanges();
 

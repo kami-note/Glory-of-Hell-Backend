@@ -18,10 +18,12 @@ namespace Black_Magic_Backend {
             _udpClient = new UdpClient(_endPoint);
 
             var authSystem = new AuthSystem();
+            var dbContext = new ApplicationDbContext();
+            var clientSessions = new Dictionary<IPEndPoint, ClientSession>();
 
             _handlers = new Dictionary<string, IMessageHandler> {
                 { "register", new RegisterHandler(authSystem) },
-                { "login", new LoginHandler(authSystem) }
+                { "login", new LoginHandler(authSystem, dbContext, clientSessions) }
             };
         }
 
