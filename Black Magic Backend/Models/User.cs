@@ -5,18 +5,18 @@ using System.Text;
 
 namespace Black_Magic_Backend.Models {
     public class User {
-        [Key] // Define como chave primária no banco de dados
+        [Key]
         public int Id { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
 
         [Required]
-        public string PasswordHash { get; private set; }
+        public string PasswordHash { get; private set; } = string.Empty;
 
         [Required]
-        public string Salt { get; private set; }
+        public string Salt { get; private set; } = string.Empty;
 
         public void SetPassword(string password) {
             Salt = GenerateSalt();

@@ -7,8 +7,10 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Black_Magic_Backend.Handlers {
-    public interface IMessageHandler {
-        Task HandleAsync(UdpClient client, JObject json, IPEndPoint remoteEndPoint);
+namespace Black_Magic_Backend.Handlers
+{
+    public interface IMessageHandler
+    {
+        Task HandleAsync(TcpClient client, JObject json);
     }
 }
