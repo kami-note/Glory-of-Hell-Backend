@@ -1,23 +1,23 @@
-using System.Net;
+using System.Net.Sockets;
 using Black_Magic_Backend.Models;
 
 public static class ConnectedClients
 {
-    private static readonly Dictionary<IPEndPoint, Character> _clients = new();
+    private static readonly Dictionary<TcpClient, Character> _clients = new();
 
-    public static void Add(IPEndPoint endpoint, Character character)
+    public static void Add(TcpClient client, Character character)
     {
-        _clients[endpoint] = character;
+        _clients[client] = character;
     }
 
-    public static void Remove(IPEndPoint endpoint)
+    public static void Remove(TcpClient client)
     {
-        _clients.Remove(endpoint);
+        _clients.Remove(client);
     }
 
-    public static Character? GetCharacter(IPEndPoint endpoint)
+    public static Character? GetCharacter(TcpClient client)
     {
-        return _clients.TryGetValue(endpoint, out var character) ? character : null;
+        return _clients.TryGetValue(client, out var character) ? character : null;
     }
 
     public static List<Character> GetAll()
