@@ -30,7 +30,7 @@ public static class PrettyConsole
     {
         var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine($"[{timestamp}] 🟢 [CONNECTION] Jogador conectado de {playerIp}");
+        Console.WriteLine($"[{timestamp}] [CONNECTION] Player connected from IP: {playerIp}");
         Console.ResetColor();
     }
 

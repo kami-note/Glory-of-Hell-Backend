@@ -1,11 +1,8 @@
 ﻿using Black_Magic_Backend.Handlers;
-using Black_Magic_Backend.Models;
 using Newtonsoft.Json.Linq;
-using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json.Nodes;
 
 namespace Black_Magic_Backend {
     public class Server {
@@ -18,11 +15,12 @@ namespace Black_Magic_Backend {
 
             var authSystem = new AuthSystem();
             var dbContext = new ApplicationDbContext();
-            var clientSessions = new Dictionary<TcpClient, ClientSession>();
+            var connectedClients = new Dictionary<TcpClient, ClientSession>();
+            var sessionManager = new SessionManager(connectedClients);
 
             _handlers = new Dictionary<string, IMessageHandler> {
                 { "register", new RegisterHandler(authSystem) },
-                { "login", new LoginHandler(authSystem, dbContext, clientSessions) }
+                { "login", new LoginHandler(authSystem, dbContext, sessionManager) }
             };
         }
 
@@ -56,17 +54,17 @@ namespace Black_Magic_Backend {
                 try {
                     JObject json = JObject.Parse(data);
 
-                    if (!json.TryGetValue("type", out var typeToken)) {
-                        PrettyConsole.LogWarning("Missing 'type' field");
+                    if (!json.TryGetValue("action", out var actionToken)) {
+                        PrettyConsole.LogWarning("Missing 'action' field");
                         continue;
                     }
 
-                    string type = typeToken.ToString();
+                    string action = actionToken.ToString();
 
-                    if (_handlers.TryGetValue(type, out var handler)) {
+                    if (_handlers.TryGetValue(action, out var handler)) {
                         await handler.HandleAsync(client, json);
                     } else {
-                        PrettyConsole.LogWarning($"Unknown message type: {type}");
+                        PrettyConsole.LogWarning($"Unknown message action: {action}");
                     }
                 } catch (Exception ex) {
                     PrettyConsole.LogError($"Failed to process data: {ex.Message}");

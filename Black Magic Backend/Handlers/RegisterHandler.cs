@@ -15,7 +15,12 @@ namespace Black_Magic_Backend.Handlers {
             bool success = _authSystem.RegisterUser(json.ToString());
 
             string response = success ? "Registration done!" : "Error in registration.";
-            byte[] responseBytes = Encoding.UTF8.GetBytes(response);
+            
+            ServerMessage message = new ServerMessage {
+                Message = response
+            };
+
+            byte[] responseBytes = Encoding.UTF8.GetBytes(message.ToString() ?? string.Empty);
             await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
         }
     }
